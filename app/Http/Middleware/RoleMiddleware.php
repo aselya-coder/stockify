@@ -8,10 +8,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, string $roles): Response
     {
-        if (!in_array($request->user()->role, $roles)) {
-            abort(403, 'Unauthorized.');
+        // Check if user is authenticated
+        if (!$request->user()) {
+            abort(401, 'Unauthenticated.');
+        }
+
+        // Split roles by pipe character
+        $allowedRoles = explode('|', $roles);
+
+        // Check if user has the required role
+        if (!in_array($request->user()->role, $allowedRoles)) {
+            abort(403, 'Unauthorized. Required role: ' . implode(' or ', $allowedRoles));
         }
 
         return $next($request);

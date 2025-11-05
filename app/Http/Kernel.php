@@ -60,10 +60,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        // Spatie Permission middleware aliases
-        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        'roles' => \Spatie\Permission\Middlewares\RoleMiddleware::class, // Added an alias
-        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+    // Spatie Permission middleware aliases
+    'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+    'roles' => \Spatie\Permission\Middleware\RoleMiddleware::class, // Added an alias
+    'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+    'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 }

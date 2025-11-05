@@ -12,6 +12,21 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 
+// Debug route to check user roles
+Route::get('/debug/roles', function() {
+    if (!auth()->check()) {
+        return "Not logged in";
+    }
+    $user = auth()->user();
+    return [
+        'user_id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'roles' => $user->getRoleNames(),
+        'all_roles' => \Spatie\Permission\Models\Role::all()->pluck('name'),
+    ];
+});
+
 // Landing page atau redirect ke dashboard jika sudah login
 Route::get('/', function () {
     if (Auth::check()) {
@@ -31,23 +46,23 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 
 // Dashboard (akses oleh semua role yang login)
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'role:staff|manager|admin'])
+    ->middleware(['auth', 'roles:staff|manager|admin'])  // Changed from role to roles
     ->name('dashboard');
 
 // Admin only: admin dashboard
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 // Manager + Admin: CRUD kategori, pemasok, produk
-Route::middleware(['auth', 'role:manager|admin'])->group(function () {
+Route::middleware(['auth', 'roles:manager|admin'])->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('products', ProductController::class);
 });
 
 // Staff + Manager + Admin: modul stok
-Route::prefix('stok')->middleware(['auth', 'role:staff|manager|admin'])->group(function () {
+Route::prefix('stok')->middleware(['auth', 'roles:staff|manager|admin'])->group(function () {
     Route::get('/', [StokController::class, 'index'])->name('stok.index');
     Route::get('/masuk', [StokController::class, 'masuk'])->name('stok.masuk');
     Route::post('/masuk', [StokController::class, 'storeMasuk'])->name('stok.masuk.store');
@@ -58,7 +73,7 @@ Route::prefix('stok')->middleware(['auth', 'role:staff|manager|admin'])->group(f
 });
 
 // Profile (akses semua role yang login)
-Route::middleware(['auth', 'role:staff|manager|admin'])->group(function () {
+Route::middleware(['auth', 'roles:staff|manager|admin'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

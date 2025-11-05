@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
 
         // Spatie Permission middleware aliases
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'roles' => \Spatie\Permission\Middlewares\RoleMiddleware::class, // Added an alias
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
     ];

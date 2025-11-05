@@ -46,23 +46,23 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 
 // Dashboard (akses oleh semua role yang login)
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'roles:staff|manager|admin'])  // Changed from role to roles
+    ->middleware(['auth', 'role:staff|manager|admin'])
     ->name('dashboard');
 
 // Admin only: admin dashboard
-Route::middleware(['auth', 'roles:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 // Manager + Admin: CRUD kategori, pemasok, produk
-Route::middleware(['auth', 'roles:manager|admin'])->group(function () {
+Route::middleware(['auth', 'role:manager|admin'])->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('products', ProductController::class);
 });
 
 // Staff + Manager + Admin: modul stok
-Route::prefix('stok')->middleware(['auth', 'roles:staff|manager|admin'])->group(function () {
+Route::prefix('stok')->middleware(['auth', 'role:staff|manager|admin'])->group(function () {
     Route::get('/', [StokController::class, 'index'])->name('stok.index');
     Route::get('/masuk', [StokController::class, 'masuk'])->name('stok.masuk');
     Route::post('/masuk', [StokController::class, 'storeMasuk'])->name('stok.masuk.store');
@@ -73,7 +73,7 @@ Route::prefix('stok')->middleware(['auth', 'roles:staff|manager|admin'])->group(
 });
 
 // Profile (akses semua role yang login)
-Route::middleware(['auth', 'roles:staff|manager|admin'])->group(function () {
+Route::middleware(['auth', 'role:staff|manager|admin'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

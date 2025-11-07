@@ -1,49 +1,75 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container mt-4">
-    <h2 class="mb-3">📊 Dashboard Admin</h2>
-    <p>Halo, {{ Auth::user()->name }} 👋</p>
+@section('title', 'Dashboard Admin')
 
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Jumlah Produk</h5>
-                    <h3>{{ $productsCount }}</h3>
-                </div>
-            </div>
+@section('page-header')
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="mb-1">👑 Dashboard Admin</h1>
+            <p class="text-muted mb-0">Gambaran umum keseluruhan sistem.</p>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Kategori</h5>
-                    <h3>{{ $categoriesCount }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Supplier</h5>
-                    <h3>{{ $suppliersCount }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5>Stok Rendah</h5>
-                    <h3>{{ $lowStock }}</h3>
-                </div>
+    </div>
+@endsection
+
+@section('content')
+<div class="row g-4">
+    <!-- Card Total Produk -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-box-seam text-primary fs-1"></i>
+                <h3 class="mt-3 mb-1">{{ App\Models\Product::count() }}</h3>
+                <p class="text-muted mb-0">Total Produk</p>
             </div>
         </div>
     </div>
 
-    <div class="mt-4 text-center">
-        <a href="{{ route('products.index') }}" class="btn btn-primary">Kelola Produk</a>
-        <a href="{{ route('categories.index') }}" class="btn btn-secondary">Kelola Kategori</a>
-        <a href="{{ route('suppliers.index') }}" class="btn btn-success">Kelola Supplier</a>
+    <!-- Card Total Kategori -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-tags text-success fs-1"></i>
+                <h3 class="mt-3 mb-1">{{ App\Models\Category::count() }}</h3>
+                <p class="text-muted mb-0">Total Kategori</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Total Supplier -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-truck text-info fs-1"></i>
+                <h3 class="mt-3 mb-1">{{ App\Models\Supplier::count() }}</h3>
+                <p class="text-muted mb-0">Total Supplier</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Total User -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-people text-warning fs-1"></i>
+                <h3 class="mt-3 mb-1">{{ App\Models\User::count() }}</h3>
+                <p class="text-muted mb-0">Total Pengguna</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Card Nilai Stok -->
+<div class="card mt-4 border-0 shadow-sm">
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+                <h5 class="mb-1">💰 Nilai Total Stok</h5>
+                <p class="text-muted mb-0">Estimasi nilai seluruh barang di gudang.</p>
+            </div>
+            <div class="text-end">
+                <h2 class="mb-0 text-primary">Rp {{ number_format(\App\Models\Product::sum(\Illuminate\Support\Facades\DB::raw('harga * stok')), 0, ',', '.') }}</h2>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

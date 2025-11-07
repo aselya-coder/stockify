@@ -15,12 +15,13 @@ class RoleMiddleware
             abort(401, 'Unauthenticated.');
         }
 
-        // Split roles by pipe character
+        // Split roles by pipe character into an array
         $allowedRoles = explode('|', $roles);
 
-        // Check if user has the required role
-        if (!in_array($request->user()->role, $allowedRoles)) {
-            abort(403, 'Unauthorized. Required role: ' . implode(' or ', $allowedRoles));
+        // 🔧 PERBAIKAN: Gunakan metode hasAnyRole() dari package spatie
+        if (!$request->user()->hasAnyRole($allowedRoles)) {
+            // Pesan error dibuat mirip dengan aslinya
+            abort(403, '403 UNAUTHORIZED. REQUIRED ROLE: ' . strtoupper(implode(' OR ', $allowedRoles)));
         }
 
         return $next($request);

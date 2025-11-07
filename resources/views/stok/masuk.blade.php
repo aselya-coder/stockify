@@ -1,95 +1,96 @@
 @extends('layouts.app')
 
-@section('page-title')
-  <h1 class="text-2xl font-semibold">Stok Masuk</h1>
-@endsection
+@section('title', 'Stok Masuk')
 
-@section('content')
-<div class="bg-white p-4 rounded shadow">
-
-    {{-- Tombol Kembali --}}
-    <div class="flex justify-between mb-4">
-        <a href="{{ url('/stok') }}" class="bg-gray-500 text-white px-4 py-2 rounded">
-            ← Kembali ke Menu Stok
+{{-- Header Halaman --}}
+@section('page-header')
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="mb-1">📈 Stok Masuk</h1>
+            <p class="text-muted mb-0">Catat barang yang baru saja tiba di gudang.</p>
+        </div>
+        {{-- TOMBOL KEMBALI ADA DI SINI --}}
+        <a href="{{ route('stok.index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle me-2"></i> Kembali ke Mutasi
         </a>
     </div>
+@endsection
 
-    {{-- Notifikasi --}}
-    @if(session('success'))
-        <div class="bg-green-200 text-green-800 p-2 rounded mb-3">
-            {{ session('success') }}
+{{-- Konten Utama --}}
+@section('content')
+<div class="row">
+    <!-- Form Stok Masuk -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Formulir Stok Masuk</h5>
+                <form action="{{ route('stok.masuk.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="product_id" class="form-label">Produk</label>
+                        <select name="product_id" id="product_id" class="form-select" required>
+                            <option value="" selected disabled>-- Pilih Produk --</option>
+                            @foreach($products as $product)
+                                <option value="{{ $product->id }}">{{ $product->nama_barang }}</option>
+                            @endforeach
+                        </select>
+                        @error('product_id')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label for="jumlah" class="form-label">Jumlah</label>
+                        <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" required>
+                        @error('jumlah')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label for="keterangan" class="form-label">Keterangan (Opsional)</label>
+                        <textarea name="keterangan" id="keterangan" class="form-control" rows="3"></textarea>
+                        @error('keterangan')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-2"></i> Simpan Stok Masuk
+                    </button>
+                </form>
+            </div>
         </div>
-    @endif
-
-    {{-- FORM TAMBAH (LANGSUNG TAMPIL) --}}
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mb-6">
-        <h2 class="text-lg font-semibold mb-4">Tambah Stok Masuk</h2>
-        <form action="{{ route('stok.masuk.store') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label class="block">Pilih Produk</label>
-                <select name="product_id" class="w-full border px-3 py-2 rounded" required>
-                    <option value="">-- Pilih Produk --</option>
-                    @foreach($products as $product)
-                        <option value="{{ $product->id }}">{{ $product->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="block">Jumlah</label>
-                <input type="number" name="quantity" class="w-full border px-3 py-2 rounded" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="block">Tanggal</label>
-                <input type="date" name="tanggal" class="w-full border px-3 py-2 rounded" required>
-            </div>
-
-            <div class="flex justify-end">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
-                    Simpan
-                </button>
-            </div>
-        </form>
     </div>
 
-    {{-- TABEL DATA --}}
-    <table class="min-w-full border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="border px-4 py-2">No</th>
-                <th class="border px-4 py-2">Produk</th>
-                <th class="border px-4 py-2">Jumlah</th>
-                <th class="border px-4 py-2">Tanggal</th>
-                <th class="border px-4 py-2">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($stockIns as $index => $item)
-                <tr>
-                    <td class="border px-4 py-2">{{ $index + 1 }}</td>
-                    <td class="border px-4 py-2">{{ $item->product->name }}</td>
-                    <td class="border px-4 py-2">{{ $item->quantity }}</td>
-                    <td class="border px-4 py-2">{{ $item->tanggal }}</td>
-                    <td class="border px-4 py-2">
-                        <form action="{{ route('stok.masuk.destroy', $item->id) }}" 
-                              method="POST" 
-                              onsubmit="return confirm('Yakin ingin menghapus?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="bg-red-600 text-white px-3 py-1 rounded">
-                                Hapus
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" class="text-center py-3">Belum ada data stok masuk.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+    <!-- Riwayat Stok Masuk Terkini -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">5 Stok Masuk Terkini</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Produk</th>
+                                <th>Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($stockIns as $stockIn)
+                                <tr>
+                                    <td>{{ $stockIn->created_at->format('d M, H:i') }}</td>
+                                    <td>{{ $stockIn->product->nama_barang }}</td>
+                                    <td><span class="badge bg-success">{{ $stockIn->jumlah }}</span></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">Belum ada data stok masuk.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

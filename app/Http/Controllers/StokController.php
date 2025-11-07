@@ -2,74 +2,138 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Stock;   
-use App\Models\StockIn;
-use App\Models\StockOut;   
+use App\Models\StockMutation;
+use Illuminate\Http\Request;
 
 class StokController extends Controller
 {
-    public function masuk()
+    public function __construct()
     {
-        $stockIns = StockIn::with('product')->get(); // ✅ tidak error lagi
-        $products = Product::all(); // ✅ data untuk dropdown pilih produk
-
-        return view('stok.masuk', compact('stockIns', 'products'));
+        $this->middleware('permission:view-stock-history')->only('index', 'history');
+        $this->middleware('permission:record-stock-in')->only('createMasuk', 'storeMasuk');
+        $this->middleware('permission:record-stock-out')->only('createKeluar', 'storeKeluar');
+        $this->middleware('permission:confirm-stock-in')->only('confirmMasukForm', 'confirmMasuk');
+        $this->middleware('permission:confirm-stock-out')->only('confirmKeluarForm', 'confirmKeluar');
+        $this->middleware('permission:perform-stock-opname')->only('opname');
     }
 
     public function index()
     {
-        // Ambil data stok masuk, keluar dan total per produk
-        $products = Product::with(['stockIns', 'stockOuts'])->get()->map(function ($product) {
-            $stokMasuk = $product->stockIns->sum('quantity');
-            $stokKeluar = $product->stockOuts->sum('quantity');
-            $totalStok = $stokMasuk - $stokKeluar;
-
-            return [
-                'name' => $product->name,
-                'stok_masuk' => $stokMasuk,
-                'stok_keluar' => $stokKeluar,
-                'total_stok' => $totalStok,
-            ];
-        });
-
-        // Kirim data ke view
-        return view('stok.index', compact('products'));
+        // Tampilkan semua mutasi, bisa difilter
+        $mutations = StockMutation::with(['product', 'user'])->latest()->paginate(20);
+        return view('stok.index', compact('mutations'));
     }
 
-    public function keluar()
+    public function createMasuk()
     {
-        $stockOuts = StockOut::with('product')->get(); // ✅ tidak error lagi
-        $products = Product::all(); // ✅ data untuk dropdown pilih produk
-
-        return view('stok.keluar', compact('stockOuts', 'products'));
+        $products = Product::all();
+        return view('stok.masuk-create', compact('products'));
     }
 
-    
+    public function storeMasuk(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string',
+        ]);
+
+        StockMutation::create([
+            'product_id' => $request->product_id,
+            'type' => 'masuk',
+            'quantity' => $request->quantity,
+            'status' => 'pending', // Status awal adalah pending
+            'notes' => $request->notes,
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('stok.index')->with('success', 'Transaksi barang masuk berhasil dicatat, menunggu konfirmasi staff.');
+    }
+
+    public function createKeluar()
+    {
+        $products = Product::all();
+        return view('stok.keluar-create', compact('products'));
+    }
+
+    public function storeKeluar(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string',
+        ]);
+
+        StockMutation::create([
+            'product_id' => $request->product_id,
+            'type' => 'keluar',
+            'quantity' => $request->quantity,
+            'status' => 'pending', // Status awal adalah pending
+            'notes' => $request->notes,
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('stok.index')->with('success', 'Transaksi barang keluar berhasil dicatat, menunggu konfirmasi staff.');
+    }
+
+    public function confirmMasukForm($id)
+    {
+        $mutation = StockMutation::with('product')->findOrFail($id);
+        return view('stok.confirm-masuk', compact('mutation'));
+    }
+
+    public function confirmMasuk(Request $request, $id)
+    {
+        $mutation = StockMutation::findOrFail($id);
+        if ($mutation->status !== 'pending') {
+            return redirect()->back()->with('error', 'Transaksi ini sudah dikonfirmasi.');
+        }
+
+        $mutation->status = 'confirmed';
+        $mutation->save();
+
+        // Tambah stok produk
+        $product = $mutation->product;
+        $product->stok += $mutation->quantity;
+        $product->save();
+
+        return redirect()->route('stok.index')->with('success', 'Barang masuk berhasil dikonfirmasi!');
+    }
+
+    public function confirmKeluarForm($id)
+    {
+        $mutation = StockMutation::with('product')->findOrFail($id);
+        return view('stok.confirm-keluar', compact('mutation'));
+    }
+
+    public function confirmKeluar(Request $request, $id)
+    {
+        $mutation = StockMutation::findOrFail($id);
+        if ($mutation->status !== 'pending') {
+            return redirect()->back()->with('error', 'Transaksi ini sudah dikonfirmasi.');
+        }
+
+        $mutation->status = 'confirmed';
+        $mutation->save();
+
+        // Kurangi stok produk
+        $product = $mutation->product;
+        $product->stok -= $mutation->quantity;
+        $product->save();
+
+        return redirect()->route('stok.index')->with('success', 'Barang keluar berhasil dikonfirmasi!');
+    }
+
+    public function opname()
+    {
+        $products = Product::all();
+        return view('stok.opname', compact('products'));
+    }
+
     public function total()
     {
-        $stok = \App\Models\StockIn::with('product')->get(); 
-        return view('stok.total', compact('stok'));
+        $products = Product::with('category', 'supplier')->get();
+        return view('stok.total', compact('products'));
     }
-
-    public function menuStok()
-    {
-        $products = Product::with(['stockIns', 'stockOuts'])->get()->map(function ($product) {
-            $stokMasuk = $product->stockIns->sum('quantity');
-            $stokKeluar = $product->stockOuts->sum('quantity');
-            $totalStok = $stokMasuk - $stokKeluar;
-
-            return [
-                'name' => $product->name,
-                'stok_masuk' => $stokMasuk,
-                'stok_keluar' => $stokKeluar,
-                'total_stok' => $totalStok,
-            ];
-        });
-
-        return view('stok.menu', compact('products'));
-    }
-
-
 }

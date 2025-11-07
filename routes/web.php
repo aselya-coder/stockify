@@ -1,80 +1,80 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StokController;
-use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ProfileController;
 
-// Debug route to check user roles
-Route::get('/debug/roles', function() {
-    if (!auth()->check()) {
-        return "Not logged in";
-    }
-    $user = auth()->user();
-    return [
-        'user_id' => $user->id,
-        'name' => $user->name,
-        'email' => $user->email,
-        'roles' => $user->getRoleNames(),
-        'all_roles' => \Spatie\Permission\Models\Role::all()->pluck('name'),
-    ];
+// --- Guest Routes ---
+Route::middleware('guest')->group(function () {
+    Route::get('/', function () { return view('welcome'); })->name('welcome');
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store']);
 });
 
-// Landing page atau redirect ke dashboard jika sudah login
-Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
-    return view('welcome');
-})->name('welcome');
+// --- Authenticated Routes ---
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-// Login & Register
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest');
-Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest')->name('register');
-Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest');
+    // Dashboard (satu route untuk semua, controller yang mengatur)
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Logout
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
-
-// Dashboard (akses oleh semua role yang login)
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'role:staff|manager|admin'])
-    ->name('dashboard');
-
-// Admin only: admin dashboard
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-});
-
-// Manager + Admin: CRUD kategori, pemasok, produk
-Route::middleware(['auth', 'role:manager|admin'])->group(function () {
-    Route::resource('categories', CategoryController::class);
-    Route::resource('suppliers', SupplierController::class);
-    Route::resource('products', ProductController::class);
-});
-
-// Staff + Manager + Admin: modul stok
-Route::prefix('stok')->middleware(['auth', 'role:staff|manager|admin'])->group(function () {
-    Route::get('/', [StokController::class, 'index'])->name('stok.index');
-    Route::get('/masuk', [StokController::class, 'masuk'])->name('stok.masuk');
-    Route::post('/masuk', [StokController::class, 'storeMasuk'])->name('stok.masuk.store');
-    Route::get('/keluar', [StokController::class, 'keluar'])->name('stok.keluar');
-    Route::post('/keluar', [StokController::class, 'storeKeluar'])->name('stok.keluar.store');
-    Route::delete('/keluar/{id}', [StokController::class, 'keluarDestroy'])->name('stok.keluar.destroy');
-    Route::get('/total', [StokController::class, 'total'])->name('stok.total');
-});
-
-// Profile (akses semua role yang login)
-Route::middleware(['auth', 'role:staff|manager|admin'])->group(function () {
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // --- ROUTE GROUP UNTUK MANAJER & ADMIN ---
+    Route::middleware('permission:view-products|view-categories|view-suppliers')->group(function () {
+        Route::resource('products', ProductController::class); // Permission diatur di controller
+        Route::resource('categories', CategoryController::class); // Permission diatur di controller
+        Route::resource('suppliers', SupplierController::class); // Permission diatur di controller
+    });
+
+    // --- ROUTE GROUP UNTUK MODUL STOK ---
+    Route::prefix('stok')->name('stok.')->group(function () {
+        Route::get('/', [StokController::class, 'index'])->name('index')->middleware('permission:view-stock-history');
+        Route::get('/history', [StokController::class, 'history'])->name('history')->middleware('permission:view-stock-history');
+        
+        // Manajer: Mencatat transaksi
+        Route::get('/masuk', [StokController::class, 'createMasuk'])->name('masuk')->middleware('permission:record-stock-in');
+        Route::get('/masuk/create', [StokController::class, 'createMasuk'])->name('masuk.create')->middleware('permission:record-stock-in');
+        Route::post('/masuk', [StokController::class, 'storeMasuk'])->name('masuk.store')->middleware('permission:record-stock-in');
+        Route::get('/keluar', [StokController::class, 'createKeluar'])->name('keluar')->middleware('permission:record-stock-out');
+        Route::get('/keluar/create', [StokController::class, 'createKeluar'])->name('keluar.create')->middleware('permission:record-stock-out');
+        Route::post('/keluar', [StokController::class, 'storeKeluar'])->name('keluar.store')->middleware('permission:record-stock-out');
+
+        // Staff: Konfirmasi transaksi (ini adalah fitur baru, perlu route baru)
+        Route::get('/masuk/{id}/confirm', [StokController::class, 'confirmMasukForm'])->name('masuk.confirm')->middleware('permission:confirm-stock-in');
+        Route::patch('/masuk/{id}/confirm', [StokController::class, 'confirmMasuk'])->name('masuk.confirm.update')->middleware('permission:confirm-stock-in');
+        Route::get('/keluar/{id}/confirm', [StokController::class, 'confirmKeluarForm'])->name('keluar.confirm')->middleware('permission:confirm-stock-out');
+        Route::patch('/keluar/{id}/confirm', [StokController::class, 'confirmKeluar'])->name('keluar.confirm.update')->middleware('permission:confirm-stock-out');
+
+        Route::get('/opname', [StokController::class, 'opname'])->name('opname')->middleware('permission:perform-stock-opname');
+        Route::get('/total', [StokController::class, 'total'])->name('total')->middleware('permission:view-stock-history');
+    });
+
+    // --- ROUTE GROUP KHUSUS ADMIN ---
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('users', UserController::class);
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::patch('/settings', [SettingController::class, 'update'])->name('settings.update');
+    });
+
+    // --- ROUTE GROUP UNTUK LAPORAN ---
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('/stok', [ReportController::class, 'stock'])->name('stock')->middleware('permission:view-stock-report');
+        Route::get('/transaksi', [ReportController::class, 'transaction'])->name('transaction')->middleware('permission:view-transaction-report');
+        Route::get('/aktivitas', [ReportController::class, 'activity'])->name('activity')->middleware('permission:view-user-activity-report');
+    });
 });

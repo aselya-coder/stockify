@@ -5,70 +5,110 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class RolePermissionSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        // Reset cached roles and permissions
+        // Reset cache role dan permission sebelum menjalankan seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        DB::transaction(function () {
-            // Define permissions
-            $permissions = [
-                // dashboard
-                'dashboard.view',
-                // category
-                'category.view', 'category.create', 'category.update', 'category.delete',
-                // supplier
-                'supplier.view', 'supplier.create', 'supplier.update', 'supplier.delete',
-                // product
-                'product.view', 'product.create', 'product.update', 'product.delete',
-                // stock
-                'stock.view', 'stock.in', 'stock.out',
-                // user management (admin only)
-                'user.manage',
-            ];
+        // --- DAFTAR SEMUA PERMISSION ---
+        // Format: verb-noun (kata kerja-kata benda)
+        $permissions = [
+            // Dashboard
+            'view-admin-dashboard',
+            'view-manager-dashboard',
+            'view-staff-dashboard',
 
-            foreach ($permissions as $perm) {
-                Permission::firstOrCreate(['name' => $perm]);
-            }
+            // Produk
+            'view-products',
+            'view-product-details',
+            'create-products',
+            'edit-products',
+            'delete-products',
+            'import-products',
+            'export-products',
 
-            // Create roles
-            $admin   = Role::firstOrCreate(['name' => 'admin']);
-            $manager = Role::firstOrCreate(['name' => 'manager']);
-            $staff   = Role::firstOrCreate(['name' => 'staff']);
+            // Kategori
+            'view-categories',
+            'create-categories',
+            'edit-categories',
+            'delete-categories',
 
-            // Assign permissions to roles
-            $admin->syncPermissions(Permission::all());
+            // Supplier
+            'view-suppliers',
+            'create-suppliers',
+            'edit-suppliers',
+            'delete-suppliers',
 
-            $manager->syncPermissions([
-                'dashboard.view',
-                'category.view', 'category.create', 'category.update', 'category.delete',
-                'supplier.view', 'supplier.create', 'supplier.update', 'supplier.delete',
-                'product.view', 'product.create', 'product.update', 'product.delete',
-                'stock.view', 'stock.in', 'stock.out',
-            ]);
+            // Stok
+            'view-stock-history',
+            'record-stock-in',
+            'record-stock-out',
+            'confirm-stock-in',
+            'confirm-stock-out',
+            'perform-stock-opname',
+            'manage-minimum-stock',
 
-            $staff->syncPermissions([
-                'dashboard.view',
-                'product.view',
-                'stock.view', 'stock.in', 'stock.out',
-            ]);
+            // Pengguna (User Management)
+            'view-users',
+            'create-users',
+            'edit-users',
+            'delete-users',
 
-            // Attach roles to existing seeded users if present
-            $adminUser = User::where('email', 'admin@stockify.com')->first();
-            if ($adminUser) { $adminUser->assignRole('admin'); }
+            // Laporan
+            'lihat-laporan-stok',
+            'lihat-laporan-transaksi',
+            'lihat-laporan-aktivitas',
 
-            $managerUser = User::where('email', 'manager@stockify.com')->first();
-            if ($managerUser) { $managerUser->assignRole('manager'); }
+            // Pengaturan
+            'manage-app-settings',
+        ];
 
-            $staffUser = User::where('email', 'staff@stockify.com')->first();
-            if ($staffUser) { $staffUser->assignRole('staff'); }
-        });
+        // Buat permission jika belum ada
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        // --- BUAT ROLE DAN BERIKAN PERMISSION ---
+
+        // 1. Role Admin
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        // Admin mendapatkan semua permission
+        $adminRole->givePermissionTo(Permission::all());
+
+        // 2. Role Manajer Gudang
+        $managerRole = Role::firstOrCreate(['name' => 'manajer_gudang']);
+        $managerRole->givePermissionTo([
+            'view-manager-dashboard',
+            'view-products',
+            'view-product-details',
+            'view-categories',
+            'view-suppliers',
+            'view-stock-history',
+            'record-stock-in',
+            'record-stock-out',
+            'perform-stock-opname',
+            'lihat-laporan-stok',
+            'lihat-laporan-transaksi',
+        ]);
+
+        // 3. Role Staff Gudang
+        $staffRole = Role::firstOrCreate(['name' => 'staff_gudang']);
+        $staffRole->givePermissionTo([
+            'view-staff-dashboard',
+            'view-products',
+            'view-product-details',
+            'view-stock-history',        // ✅ TAMBAHKAN INI
+            'confirm-stock-in',
+            'confirm-stock-out',
+            'lihat-laporan-stok',        // ✅ TAMBAHKAN INI
+        ]);
+
+        $this->command->info('✅ Role dan Permission berhasil diperbarui!');
     }
 }

@@ -2,130 +2,64 @@
 
 @section('title', 'Daftar Kategori')
 
-@section('content')
-<style>
-    /* === Gaya Umum === */
-    table.table {
-        border-collapse: separate !important;
-        border-spacing: 0;
-        font-size: 0.95rem; /* ukuran teks pas */
-    }
-
-    table.table th {
-        background-color: #e8f1ff !important;
-        color: #000;
-        text-align: center;
-        vertical-align: middle !important;
-        height: 48px !important; /* lebih proporsional */
-        font-weight: 600;
-    }
-
-    table.table td {
-        vertical-align: middle !important;
-        height: 48px !important;
-        font-size: 0.95rem;
-    }
-
-    td.text-start {
-        padding-left: 14px !important;
-    }
-
-    /* Tombol aksi konsisten */
-    .btn-action {
-        width: 34px;
-        height: 34px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        border-radius: 6px;
-    }
-
-    /* Hover lembut */
-    .table-hover tbody tr:hover {
-        background-color: #f6f9ff !important;
-    }
-
-    /* Kartu tabel */
-    .card {
-        border-radius: 10px !important;
-    }
-
-    /* Tombol Tambah */
-    .btn-primary {
-        background-color: #0d6efd !important;
-        border: none !important;
-        font-size: 0.9rem;
-        padding: 8px 14px;
-        border-radius: 8px;
-    }
-
-    .btn-primary i {
-        font-size: 1rem;
-    }
-
-    h3.fw-bold {
-        font-size: 1.3rem;
-    }
-</style>
-
-<div class="container">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold mb-0 d-flex align-items-center gap-2">
-            📁 Daftar Kategori
-        </h3>
-        <a href="{{ route('categories.create') }}" class="btn btn-primary shadow-sm d-flex align-items-center gap-1">
-            <i class="bi bi-plus-circle"></i> Tambah Kategori
-        </a>
-    </div>
-
-    <!-- Alert -->
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show shadow-sm small" role="alert">
-            <i class="bi bi-check-circle me-2"></i> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+{{-- Header Halaman --}}
+@section('page-header')
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="mb-1">🗂️ Daftar Kategori</h1>
+            <p class="text-muted mb-0">Kelola grup atau kategori untuk setiap produk.</p>
         </div>
-    @endif
+    </div>
+@endsection
 
-    <!-- Table -->
-    <div class="card border-0 shadow-sm rounded-3">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0 align-middle">
-                <thead>
+{{-- Konten Utama --}}
+@section('content')
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
                     <tr>
-                        <th class="text-center" style="width: 6%;">No</th>
-                        <th class="text-start" style="width: 34%;">Nama Kategori</th>
-                        <th class="text-start" style="width: 45%;">Keterangan</th>
-                        <th class="text-center" style="width: 15%;">Aksi</th>
+                        <th style="width: 50px;">No</th>
+                        <th>Nama Kategori</th>
+                        <th>Keterangan</th>
+                        <th style="width: 150px;" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($categories as $kategori)
+                    @forelse($categories as $category)
                     <tr>
-                        <td class="text-center align-middle">{{ $loop->iteration }}</td>
-                        <td class="text-start align-middle fw-semibold">{{ $kategori->nama_kategori }}</td>
-                        <td class="text-start align-middle">{{ $kategori->deskripsi ?? '-' }}</td>
-                        <td class="text-center align-middle">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ route('categories.edit', $kategori->id) }}" 
-                                   class="btn btn-warning btn-action">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('categories.destroy', $kategori->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-action">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
+                        <td class="text-center text-muted">{{ $loop->iteration }}</td>
+                        <td class="fw-semibold">{{ $category->nama_kategori }}</td>
+                        <td class="text-muted">{{ $category->deskripsi ?? '-' }}</td>
+                        <td class="text-center">
+                            @role('admin|manager')
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger" title="Hapus">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endrole
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-3">
-                            Belum ada kategori yang terdaftar.
+                        <td colspan="4" class="text-center text-muted py-5">
+                            <i class="bi bi-tags fs-1 d-block mb-2"></i>
+                            Belum ada data kategori.
+                            @role('admin|manager')
+                                <br>
+                                <a href="{{ route('categories.create') }}" class="btn btn-sm btn-primary mt-2">
+                                    <i class="bi bi-plus-circle me-1"></i> Tambah Kategori Pertama
+                                </a>
+                            @endrole
                         </td>
                     </tr>
                     @endforelse

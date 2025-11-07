@@ -3,87 +3,91 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
+use App\Models\StockMutation; // Asumsikan Anda punya model untuk mutasi
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-// 📊 Halaman utama dashboard
-public function index()
-{
-$productsCount = Product::count();
-$categoriesCount = Category::count();
-$suppliersCount = DB::table('suppliers')->count();
+    /**
+     * Tampilkan dashboard berdasarkan role user.
+     */
+    public function index(Request $request)
+    {
+        $user = $request->user();
 
-// Pakai kolom stok (total) untuk low stock threshold
-$lowStock = Product::where('stok', '<', 10)->count();
+        if ($user->hasRole('admin')) {
+            return $this->adminDashboard();
+        } elseif ($user->hasRole('manajer_gudang')) {
+            return $this->managerDashboard();
+        } elseif ($user->hasRole('staff_gudang')) {
+            return $this->staffDashboard();
+        }
 
-// Ambil data kategori untuk grafik (fallback name jika nama_kategori tidak ada)
-$categories = Category::withCount('products')->get();
-$categoryLabels = $categories->pluck(
-$categories->first() && array_key_exists('nama_kategori', $categories->first()->getAttributes())
-? 'nama_kategori'
-: 'name'
-)->toArray();
-$categoryCounts = $categories->pluck('products_count')->toArray();
+        // Jika role tidak dikenal, tampilkan error atau dashboard default
+        abort(403, 'Anda tidak memiliki role yang valid untuk mengakses dashboard.');
+    }
 
-// Ambil data stok masuk & keluar
-$products = Product::select('nama_barang', 'stok_masuk', 'stok_keluar')->get();
-$produkLabels = $products->pluck('nama_barang')->toArray();
-$stokMasuk = $products->pluck('stok_masuk')->toArray();
-$stokKeluar = $products->pluck('stok_keluar')->toArray();
+    /**
+     * Dashboard untuk Admin
+     */
+    private function adminDashboard()
+    {
+        $totalProducts = Product::count();
+        $totalCategories = Category::count();
+        $totalSuppliers = Supplier::count();
+        $totalUsers = User::count();
 
-return view('dashboard.index', [
-'productsCount' => $productsCount,
-'categoriesCount' => $categoriesCount,
-'suppliersCount' => $suppliersCount,
-'lowStock' => $lowStock,
-'categoryLabels' => $categoryLabels,
-'categoryCounts' => $categoryCounts,
-'produkLabels' => $produkLabels,
-'stokMasuk' => $stokMasuk,
-'stokKeluar' => $stokKeluar,
-]);
-}
+        // Hitung nilai total stok (harga * stok)
+        $totalStockValue = Product::sum(DB::raw('harga * stok'));
 
-// 🔍 Fungsi Search untuk Produk, Kategori, dan Supplier
-public function search(Request $request)
-{
-$query = $request->input('query');
+        return view('dashboard.admin', compact(
+            'totalProducts',
+            'totalCategories',
+            'totalSuppliers',
+            'totalUsers',
+            'totalStockValue'
+        ));
+    }
 
-// Cari di produk (nama/kode/stok)
-$products = Product::query()
-->when($query, function ($q) use ($query) {
-$q->where('nama_barang', 'like', "%{$query}%")
-->orWhere('kode_barang', 'like', "%{$query}%")
-->orWhere('stok', 'like', "%{$query}%");
-})
-->get();
+    /**
+     * Dashboard untuk Manajer Gudang
+     */
+    private function managerDashboard()
+    {
+        // Produk dengan stok menipis (kurang dari 10)
+        $lowStockProducts = Product::with('category')
+            ->where('stok', '<', 10)
+            ->orderBy('stok', 'asc')
+            ->get();
 
-// Cari di kategori (fallback name/nama_kategori)
-$categories = Category::query()
-->when($query, function ($q) use ($query) {
-$q->where('nama_kategori', 'like', "%{$query}%")
-->orWhere('name', 'like', "%{$query}%");
-})
-->get();
+        // 5 Mutasi stok terakhir
+        $recentMutations = StockMutation::with('product')
+            ->latest()
+            ->take(5)
+            ->get();
 
-// Cari di supplier (nama/perusahaan/email)
-$suppliers = Supplier::query()
-->when($query, function ($q) use ($query) {
-$q->where('nama_supplier', 'like', "%{$query}%")
-->orWhere('perusahaan', 'like', "%{$query}%")
-->orWhere('email', 'like', "%{$query}%");
-})
-->get();
+        return view('dashboard.manajer', compact(
+            'lowStockProducts',
+            'recentMutations'
+        ));
+    }
 
-return view('dashboard.search', [
-'query' => $query,
-'products' => $products,
-'categories' => $categories,
-'suppliers' => $suppliers,
-]);
-}
+    /**
+     * Dashboard untuk Staff Gudang
+     */
+    private function staffDashboard()
+    {
+        // Produk dengan stok menipis yang perlu diperhatikan staff
+        $lowStockProducts = Product::with('category')
+            ->where('stok', '<', 10)
+            ->orderBy('stok', 'asc')
+            ->take(10) // Batasi 10 agar tidak terlalu panjang
+            ->get();
+
+        return view('dashboard.staff', compact('lowStockProducts'));
+    }
 }

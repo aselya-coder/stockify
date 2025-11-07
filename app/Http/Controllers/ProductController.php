@@ -9,23 +9,47 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    // 🧭 Menampilkan semua produk
+
+    public function __construct()
+    {
+        // Hanya user dengan permission 'view-products' yang bisa melihat daftar dan detail
+        $this->middleware('permission:view-products')->only('index', 'show');
+
+        // Hanya user dengan permission 'create-products' yang bisa menambah
+        $this->middleware('permission:create-products')->only('create', 'store');
+
+        // Hanya user dengan permission 'edit-products' yang bisa mengedit
+        $this->middleware('permission:edit-products')->only('edit', 'update');
+
+        // Hanya user dengan permission 'delete-products' yang bisa menghapus
+        $this->middleware('permission:delete-products')->only('destroy');
+    }
+
+
+    /**
+     * Menampilkan daftar semua produk.
+     */
     public function index()
     {
         $products = Product::with(['category', 'supplier'])->get();
         return view('products.index', compact('products'));
     }
 
-    // 🆕 Halaman tambah produk
+    /**
+     * Menampilkan form untuk menambah produk.
+     */
     public function create()
     {
         $categories = Category::all();
         $suppliers = Supplier::all();
 
-        return view('products.form', compact('categories', 'suppliers'));
+        // 🔧 Perbaikan: Arahkan ke view 'products.create'
+        return view('products.create', compact('categories', 'suppliers'));
     }
 
-    // 💾 Simpan produk baru
+    /**
+     * Menyimpan produk baru ke database.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -49,17 +73,22 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    // ✏️ Edit produk
+    /**
+     * Menampilkan form untuk mengedit produk.
+     */
     public function edit($id)
     {
         $product = Product::findOrFail($id);
         $categories = Category::all();
         $suppliers = Supplier::all();
 
-        return view('products.form', compact('product', 'categories', 'suppliers'));
+        // 🔧 Perbaikan: Arahkan ke view 'products.edit'
+        return view('products.edit', compact('product', 'categories', 'suppliers'));
     }
 
-    // 🔁 Update produk
+    /**
+     * Memperbarui data produk di database.
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -85,7 +114,9 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui!');
     }
 
-    // 🗑️ Hapus produk
+    /**
+     * Menghapus produk dari database.
+     */
     public function destroy($id)
     {
         $product = Product::findOrFail($id);

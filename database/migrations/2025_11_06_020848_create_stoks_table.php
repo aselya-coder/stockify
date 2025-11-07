@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stocks', function (Blueprint $table) {
+        Schema::create('stoks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->integer('total')->default(0); // jumlah stok akhir
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->enum('jenis', ['masuk', 'keluar']);
+            $table->integer('jumlah');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stocks');
+        Schema::dropIfExists('stoks');
     }
 };

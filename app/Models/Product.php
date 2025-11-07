@@ -13,37 +13,31 @@ class Product extends Model
         'nama_barang',
         'kategori_id',
         'supplier_id',
-        'stok',
-        'stok_masuk',
-        'stok_keluar',
         'harga',
+        'stok',
     ];
 
-    // ✅ Relasi ke Kategori (pakai kolom 'kategori_id')
+    /**
+     * Relasi ke kategori.
+     */
     public function category()
     {
         return $this->belongsTo(Category::class, 'kategori_id');
     }
 
-    // ✅ Relasi ke Supplier (tetap)
+    /**
+     * Relasi ke supplier.
+     */
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
-    public function stock()
+    /**
+     * Relasi ke riwayat mutasi stok.
+     */
+    public function stockMutations()
     {
-        return $this->hasOne(Stock::class);
+        return $this->hasMany(StockMutation::class);
     }
-
-    public function stockIns()
-    {
-        return $this->hasMany(StockIn::class);
-    }
-
-    public function stockOuts()
-    {
-        return $this->hasMany(StockOut::class);
-    }
-
 }

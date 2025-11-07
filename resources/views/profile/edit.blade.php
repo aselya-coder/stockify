@@ -1,66 +1,83 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Saya')
+@section('title', 'Edit Profil')
+
+@section('page-header')
+    <h1>👤 Edit Profil Saya</h1>
+@endsection
 
 @section('content')
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ route('profile.update') }}">
+                    @csrf
+                    @method('PATCH')
 
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4 class="mb-0">Profil Pengguna</h4>
-                </div>
+                    <!-- Nama -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name) }}" required autofocus>
+                        @error('name')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                <div class="card-body text-center">
-                    {{-- ✅ Foto Profil --}}
-                    <img src="{{ auth()->user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" 
-                        alt="Foto Profil" 
-                        class="rounded-circle mb-3" 
-                        width="120" height="120">
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $user->email) }}" required>
+                        @error('email')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                    {{-- ✅ Data Profil --}}
-                    <h5 class="mb-1">{{ auth()->user()->name }}</h5>
-                    <p class="text-muted mb-3">{{ auth()->user()->email }}</p>
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password Baru (opsional)</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
+                        @error('password')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                    {{-- ✅ Role Pengguna --}}
-                    <span class="badge 
-                        @if(auth()->user()->role == 'admin') bg-danger 
-                        @elseif(auth()->user()->role == 'manager') bg-warning 
-                        @else bg-success 
-                        @endif">
-                        {{ ucfirst(auth()->user()->role) }}
-                    </span>
-                </div>
+                    <!-- Konfirmasi Password -->
+                    <div class="mb-3">
+                        <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password baru">
+                    </div>
 
-                <div class="card-body border-top">
-                    {{-- ✅ Form Ubah Profil --}}
-                    <form method="POST" action="{{ route('profile.update') }}">
-                        @csrf
-                        @method('PATCH')
-
-                        <div class="mb-3 text-start">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name', auth()->user()->name) }}">
-                        </div>
-
-                        <div class="mb-3 text-start">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email', auth()->user()->email) }}">
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-success">💾 Simpan Perubahan</button>
-                            <a href="{{ route('dashboard') }}" class="btn btn-secondary">⬅️ Kembali</a>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="card-footer text-center text-muted">
-                    Diperbarui pada: {{ auth()->user()->updated_at->format('d M Y, H:i') }}
-                </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-2"></i> Simpan Perubahan
+                    </button>
+                </form>
             </div>
+        </div>
 
+        <!-- Form Hapus Akun -->
+        <div class="card mt-4 border-danger">
+            <div class="card-body">
+                <h5 class="card-title text-danger">⚠️ Hapus Akun</h5>
+                <p class="card-text">Tindakan ini tidak dapat dibatalkan. Semua data Anda akan dihapus secara permanen.</p>
+                
+                <form method="POST" action="{{ route('profile.destroy') }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun Anda?');">
+                    @csrf
+                    @method('DELETE')
+                    
+                    <div class="mb-3">
+                        <label for="delete_password" class="form-label">Masukkan password untuk konfirmasi:</label>
+                        <input type="password" class="form-control" id="delete_password" name="password" required>
+                        @error('password')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i> Hapus Akun Saya
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

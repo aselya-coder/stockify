@@ -36,9 +36,23 @@ Route::middleware('auth')->group(function () {
 
     // --- ROUTE GROUP UNTUK MANAJER & ADMIN ---
     Route::middleware('permission:view-products|view-categories|view-suppliers')->group(function () {
-        Route::resource('products', ProductController::class); // Permission diatur di controller
-        Route::resource('categories', CategoryController::class); // Permission diatur di controller
-        Route::resource('suppliers', SupplierController::class); // Permission diatur di controller
+        // ==========================================================
+        // ROUTE UNTUK FITUR MANAJEMEN STOK (AJAX)
+        // ==========================================================
+        // Route untuk mengambil data produk dalam format JSON
+        Route::get('/products.json', [ProductController::class, 'jsonIndex'])->name('products.json');
+
+        // Route untuk menambah stok via AJAX
+        Route::post('/products/{product}/add-stock', [ProductController::class, 'addStock'])->name('products.add-stock');
+
+        // --- ROUTE YANG DITAMBAHKAN ---
+        // Route untuk mengurangi stok via AJAX
+        Route::post('/products/{product}/reduce-stock', [ProductController::class, 'reduceStock'])->name('products.reduce-stock');
+
+        // Route resource untuk produk (diletakkan setelah route kustom)
+        Route::resource('products', ProductController::class);
+        Route::resource('categories', CategoryController::class);
+        Route::resource('suppliers', SupplierController::class);
     });
 
     // --- ROUTE GROUP UNTUK MODUL STOK ---
@@ -54,7 +68,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/keluar/create', [StokController::class, 'createKeluar'])->name('keluar.create')->middleware('permission:record-stock-out');
         Route::post('/keluar', [StokController::class, 'storeKeluar'])->name('keluar.store')->middleware('permission:record-stock-out');
 
-        // Staff: Konfirmasi transaksi (ini adalah fitur baru, perlu route baru)
+        // Staff: Konfirmasi transaksi
         Route::get('/masuk/{id}/confirm', [StokController::class, 'confirmMasukForm'])->name('masuk.confirm')->middleware('permission:confirm-stock-in');
         Route::patch('/masuk/{id}/confirm', [StokController::class, 'confirmMasuk'])->name('masuk.confirm.update')->middleware('permission:confirm-stock-in');
         Route::get('/keluar/{id}/confirm', [StokController::class, 'confirmKeluarForm'])->name('keluar.confirm')->middleware('permission:confirm-stock-out');

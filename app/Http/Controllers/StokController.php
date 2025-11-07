@@ -28,7 +28,8 @@ class StokController extends Controller
     public function createMasuk()
     {
         $products = Product::all();
-        return view('stok.masuk-create', compact('products'));
+        $stockIns = StockMutation::where('type', 'masuk')->with('product')->latest()->take(5)->get();
+        return view('stok.masuk', compact('products', 'stockIns'));
     }
 
     public function storeMasuk(Request $request)
@@ -54,7 +55,7 @@ class StokController extends Controller
     public function createKeluar()
     {
         $products = Product::all();
-        return view('stok.keluar-create', compact('products'));
+        return view('stok.keluar', compact('products'));
     }
 
     public function storeKeluar(Request $request)

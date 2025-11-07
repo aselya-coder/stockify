@@ -10,6 +10,11 @@
             <p class="text-muted mb-0">Kelola informasi supplier atau pemasok barang.</p>
         </div>
         
+        <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|manager')): ?>
+            <a href="<?php echo e(route('suppliers.create')); ?>" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i> Tambah Supplier
+            </a>
+        <?php endif; ?>
     </div>
 <?php $__env->stopSection(); ?>
 

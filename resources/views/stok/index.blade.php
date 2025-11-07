@@ -9,6 +9,14 @@
             <h1 class="mb-1">📊 Mutasi Stok</h1>
             <p class="text-muted mb-0">Lihat semua riwayat pergerakan stok barang.</p>
         </div>
+        <div>
+            <a href="{{ route('stok.masuk') }}" class="btn btn-success me-2">
+                <i class="bi bi-plus-circle me-1"></i> Catat Stok Masuk
+            </a>
+            <a href="{{ route('stok.keluar') }}" class="btn btn-danger">
+                <i class="bi bi-dash-circle me-1"></i> Catat Stok Keluar
+            </a>
+        </div>
     </div>
 @endsection
 
@@ -49,16 +57,7 @@
                         <td class="fw-semibold">{{ $mutation->quantity }}</td>
                         <td class="text-muted">{{ $mutation->notes ?? '-' }}</td>
                         <td class="text-center">
-                            {{-- Hanya tombol hapus yang muncul untuk stok keluar, sesuai route --}}
-                            @if($mutation->type == 'keluar')
-                                <form action="{{ route('stok.keluar.destroy', $mutation->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus riwayat stok keluar ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-outline-danger" title="Hapus">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            @endif
+                            {{-- No delete action for now --}}
                         </td>
                     </tr>
                     @empty

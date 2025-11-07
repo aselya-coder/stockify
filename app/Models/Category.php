@@ -9,11 +9,14 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama_kategori'];
+    protected $guarded = ['id']; // Atau $fillable jika Anda lebih suka
 
+    /**
+     * Relasi ke model Product.
+     * Satu kategori bisa dimiliki oleh banyak produk.
+     */
     public function products()
     {
-        // ✅ foreign key sesuai dengan kolom di tabel products
-        return $this->hasMany(Product::class, 'kategori_id');
+        return $this->hasMany(Product::class, 'kategori_id'); // Sesuaikan 'kategori_id' dengan foreign key di tabel products Anda
     }
 }

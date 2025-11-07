@@ -14,13 +14,15 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // Jalankan ini terlebih dahulu untuk membuat role dan permission
             RolePermissionSeeder::class,
-            
+
             // Kemudian jalankan ini untuk membuat user dan memberikan role
             UserSeeder::class,
 
             // Jalankan seeder lainnya jika ada
-            // CategorySeeder::class,
-            // SupplierSeeder::class,
+            CategorySeeder::class,
+            SupplierSeeder::class,
+            ProductSeeder::class,
+            StockMutationSeeder::class,
         ]);
     }
 }

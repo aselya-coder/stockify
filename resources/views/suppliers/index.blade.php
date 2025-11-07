@@ -9,7 +9,12 @@
             <h1 class="mb-1">🚚 Daftar Supplier</h1>
             <p class="text-muted mb-0">Kelola informasi supplier atau pemasok barang.</p>
         </div>
-        {{-- TOMBOL TAMBAH SUPPLIER SUDAH DIHAPUS DARI SINI --}}
+        {{-- TOMBOL TAMBAH SUPPLIER DITAMBAHKAN KEMBALI DI SINI --}}
+        @role('admin|manager')
+            <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i> Tambah Supplier
+            </a>
+        @endrole
     </div>
 @endsection
 

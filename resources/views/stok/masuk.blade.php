@@ -39,9 +39,9 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="jumlah" class="form-label">Jumlah</label>
-                        <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" required>
-                        @error('jumlah')
+                        <label for="quantity" class="form-label">Jumlah</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
+                        @error('quantity')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -79,7 +79,7 @@
                                 <tr>
                                     <td>{{ $stockIn->created_at->format('d M, H:i') }}</td>
                                     <td>{{ $stockIn->product->nama_barang }}</td>
-                                    <td><span class="badge bg-success">{{ $stockIn->jumlah }}</span></td>
+                                    <td><span class="badge bg-success">{{ $stockIn->quantity }}</span></td>
                                 </tr>
                             @empty
                                 <tr>

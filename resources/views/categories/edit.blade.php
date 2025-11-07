@@ -2,12 +2,11 @@
 
 @section('title', 'Edit Kategori')
 
-{{-- Header Halaman --}}
 @section('page-header')
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h1 class="mb-1">✏️ Edit Kategori</h1>
-            <p class="text-muted mb-0">Perbarui informasi kategori yang sudah ada.</p>
+            <p class="text-muted mb-0">Perbarui informasi kategori yang ada.</p>
         </div>
         <a href="{{ route('categories.index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left-circle me-2"></i> Kembali
@@ -15,7 +14,6 @@
     </div>
 @endsection
 
-{{-- Konten Utama --}}
 @section('content')
 <div class="row">
     <div class="col-lg-6">
@@ -27,16 +25,16 @@
                     @method('PUT')
                     <div class="mb-3">
                         <label for="nama_kategori" class="form-label">Nama Kategori</label>
-                        <input type="text" name="nama_kategori" id="nama_kategori" class="form-control" value="{{ old('nama_kategori', $category->nama_kategori) }}" required>
+                        <input type="text" name="nama_kategori" id="nama_kategori" class="form-control @error('nama_kategori') is-invalid @enderror" value="{{ old('nama_kategori', $category->nama_kategori) }}" placeholder="Contoh: Elektronik" required>
                         @error('nama_kategori')
-                            <div class="form-text text-danger">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="mb-3">
                         <label for="deskripsi" class="form-label">Deskripsi</label>
-                        <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4">{{ old('deskripsi', $category->deskripsi) }}</textarea>
+                        <textarea name="deskripsi" id="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" rows="4" placeholder="Berikan deskripsi singkat untuk kategori ini (opsional)">{{ old('deskripsi', $category->deskripsi) }}</textarea>
                         @error('deskripsi')
-                            <div class="form-text text-danger">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <button type="submit" class="btn btn-primary">

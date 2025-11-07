@@ -9,6 +9,14 @@
             <h1 class="mb-1">📊 Mutasi Stok</h1>
             <p class="text-muted mb-0">Lihat semua riwayat pergerakan stok barang.</p>
         </div>
+        <div>
+            <a href="<?php echo e(route('stok.masuk')); ?>" class="btn btn-success me-2">
+                <i class="bi bi-plus-circle me-1"></i> Catat Stok Masuk
+            </a>
+            <a href="<?php echo e(route('stok.keluar')); ?>" class="btn btn-danger">
+                <i class="bi bi-dash-circle me-1"></i> Catat Stok Keluar
+            </a>
+        </div>
     </div>
 <?php $__env->stopSection(); ?>
 
@@ -50,15 +58,6 @@
                         <td class="text-muted"><?php echo e($mutation->notes ?? '-'); ?></td>
                         <td class="text-center">
                             
-                            <?php if($mutation->type == 'keluar'): ?>
-                                <form action="<?php echo e(route('stok.keluar.destroy', $mutation->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus riwayat stok keluar ini?')">
-                                    <?php echo csrf_field(); ?>
-                                    <?php echo method_field('DELETE'); ?>
-                                    <button class="btn btn-sm btn-outline-danger" title="Hapus">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

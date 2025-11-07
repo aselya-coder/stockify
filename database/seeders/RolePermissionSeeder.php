@@ -77,36 +77,45 @@ class RolePermissionSeeder extends Seeder
         // --- BUAT ROLE DAN BERIKAN PERMISSION ---
 
         // 1. Role Admin
+        // Mengelola seluruh aspek aplikasi, CRUD kategori, supplier, pengguna, laporan, pengaturan
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         // Admin mendapatkan semua permission
         $adminRole->givePermissionTo(Permission::all());
 
         // 2. Role Manajer Gudang
+        // Bertanggung jawab atas manajemen stok barang, menerima/keluar barang, stock opname, laporan stok
+        // Hanya bisa melihat kategori dan supplier, tidak bisa mengelola (create/edit/delete)
         $managerRole = Role::firstOrCreate(['name' => 'manajer_gudang']);
         $managerRole->givePermissionTo([
             'view-manager-dashboard',
             'view-products',
             'view-product-details',
-            'view-categories',
-            'view-suppliers',
+            'create-products',
+            'edit-products',
+            'view-categories', // Hanya view, sesuai spesifikasi
+            'view-suppliers', // Hanya view, untuk memilih saat transaksi
             'view-stock-history',
             'record-stock-in',
             'record-stock-out',
             'perform-stock-opname',
+            'manage-minimum-stock',
             'lihat-laporan-stok',
             'lihat-laporan-transaksi',
+            'lihat-laporan-aktivitas',
         ]);
 
         // 3. Role Staff Gudang
+        // Membantu operasional gudang, menerima/memeriksa barang masuk, menyiapkan barang keluar, stock opname
         $staffRole = Role::firstOrCreate(['name' => 'staff_gudang']);
         $staffRole->givePermissionTo([
             'view-staff-dashboard',
             'view-products',
             'view-product-details',
-            'view-stock-history',        // ✅ TAMBAHKAN INI
+            'view-stock-history',
             'confirm-stock-in',
             'confirm-stock-out',
-            'lihat-laporan-stok',        // ✅ TAMBAHKAN INI
+            'perform-stock-opname',
+            'lihat-laporan-stok',
         ]);
 
         $this->command->info('✅ Role dan Permission berhasil diperbarui!');

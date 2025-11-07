@@ -9,16 +9,23 @@ class Product extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'nama_barang',
         'kategori_id',
         'supplier_id',
         'harga',
         'stok',
+        'stok_masuk', // DITAMBAHKAN
+        'stok_keluar', // DITAMBAHKAN
     ];
 
     /**
-     * Relasi ke kategori.
+     * Get the category that owns the product.
      */
     public function category()
     {
@@ -26,7 +33,7 @@ class Product extends Model
     }
 
     /**
-     * Relasi ke supplier.
+     * Get the supplier that owns the product.
      */
     public function supplier()
     {
@@ -34,7 +41,8 @@ class Product extends Model
     }
 
     /**
-     * Relasi ke riwayat mutasi stok.
+     * Get the stock mutations for the product.
+     * Catatan: Memastikan Anda sudah membuat model StockMutation agar relasi ini berfungsi.
      */
     public function stockMutations()
     {

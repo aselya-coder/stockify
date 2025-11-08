@@ -57,7 +57,20 @@
                         <td class="fw-semibold"><?php echo e($mutation->quantity); ?></td>
                         <td class="text-muted"><?php echo e($mutation->notes ?? '-'); ?></td>
                         <td class="text-center">
-                            
+                            <?php if(auth()->user()->hasRole('admin')): ?>
+                                <div class="btn-group" role="group">
+                                    <a href="<?php echo e(route('stok.edit', $mutation->id)); ?>" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="<?php echo e(route('stok.destroy', $mutation->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus mutasi ini?')">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

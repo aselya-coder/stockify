@@ -76,6 +76,11 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/opname', [StokController::class, 'opname'])->name('opname')->middleware('permission:perform-stock-opname');
         Route::get('/total', [StokController::class, 'total'])->name('total')->middleware('permission:view-stock-history');
+
+        // Admin only: Edit and delete mutations
+        Route::get('/{id}/edit', [StokController::class, 'edit'])->name('edit')->middleware('role:admin');
+        Route::patch('/{id}', [StokController::class, 'update'])->name('update')->middleware('role:admin');
+        Route::delete('/{id}', [StokController::class, 'destroy'])->name('destroy')->middleware('role:admin');
     });
 
     // --- ROUTE GROUP KHUSUS ADMIN ---
@@ -87,8 +92,8 @@ Route::middleware('auth')->group(function () {
 
     // --- ROUTE GROUP UNTUK LAPORAN ---
     Route::prefix('laporan')->name('laporan.')->group(function () {
-        Route::get('/stok', [ReportController::class, 'stock'])->name('stock')->middleware('permission:view-stock-report');
-        Route::get('/transaksi', [ReportController::class, 'transaction'])->name('transaction')->middleware('permission:view-transaction-report');
-        Route::get('/aktivitas', [ReportController::class, 'activity'])->name('activity')->middleware('permission:view-user-activity-report');
+        Route::get('/stok', [ReportController::class, 'stock'])->name('stock')->middleware('permission:lihat-laporan-stok');
+        Route::get('/transaksi', [ReportController::class, 'transaction'])->name('transaction')->middleware('permission:lihat-laporan-transaksi');
+        Route::get('/aktivitas', [ReportController::class, 'activity'])->name('activity')->middleware('permission:lihat-laporan-aktivitas');
     });
 });

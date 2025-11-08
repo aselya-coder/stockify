@@ -53,6 +53,8 @@ class RolePermissionSeeder extends Seeder
             'confirm-stock-out',
             'perform-stock-opname',
             'manage-minimum-stock',
+            'edit-mutations',
+            'delete-mutations',
 
             // Pengguna (User Management)
             'view-users',
@@ -84,14 +86,12 @@ class RolePermissionSeeder extends Seeder
 
         // 2. Role Manajer Gudang
         // Bertanggung jawab atas manajemen stok barang, menerima/keluar barang, stock opname, laporan stok
-        // Hanya bisa melihat kategori dan supplier, tidak bisa mengelola (create/edit/delete)
+        // Hanya bisa melihat kategori, produk, dan supplier, tidak bisa mengelola (create/edit/delete)
         $managerRole = Role::firstOrCreate(['name' => 'manajer_gudang']);
         $managerRole->givePermissionTo([
             'view-manager-dashboard',
             'view-products',
             'view-product-details',
-            'create-products',
-            'edit-products',
             'view-categories', // Hanya view, sesuai spesifikasi
             'view-suppliers', // Hanya view, untuk memilih saat transaksi
             'view-stock-history',

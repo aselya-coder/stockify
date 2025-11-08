@@ -10,7 +10,7 @@
             <p class="text-muted mb-0">Kelola informasi supplier atau pemasok barang.</p>
         </div>
         
-        <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|manager')): ?>
+        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create-suppliers')): ?>
             <a href="<?php echo e(route('suppliers.create')); ?>" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Supplier
             </a>
@@ -41,19 +41,19 @@
                         <td><?php echo e($supplier->telepon); ?></td>
                         <td class="text-muted"><?php echo e($supplier->alamat); ?></td>
                         <td class="text-center">
-                            <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|manager')): ?>
-                                <div class="btn-group" role="group">
-                                    <a href="<?php echo e(route('suppliers.edit', $supplier->id)); ?>" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <form action="<?php echo e(route('suppliers.destroy', $supplier->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus supplier ini?')">
-                                        <?php echo csrf_field(); ?>
-                                        <?php echo method_field('DELETE'); ?>
-                                        <button class="btn btn-sm btn-outline-danger" title="Hapus">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('edit-suppliers')): ?>
+                                <a href="<?php echo e(route('suppliers.edit', $supplier->id)); ?>" class="btn btn-sm btn-outline-warning" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete-suppliers')): ?>
+                                <form action="<?php echo e(route('suppliers.destroy', $supplier->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus supplier ini?')">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('DELETE'); ?>
+                                    <button class="btn btn-sm btn-outline-danger" title="Hapus">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -62,7 +62,7 @@
                         <td colspan="5" class="text-center text-muted py-5">
                             <i class="bi bi-truck fs-1 d-block mb-2"></i>
                             Belum ada data supplier.
-                            <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|manager')): ?>
+                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create-suppliers')): ?>
                                 <br>
                                 <a href="<?php echo e(route('suppliers.create')); ?>" class="btn btn-sm btn-primary mt-2">
                                     <i class="bi bi-plus-circle me-1"></i> Tambah Supplier Pertama

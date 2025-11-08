@@ -9,12 +9,12 @@
             <h1 class="mb-1">📦 Daftar Produk</h1>
             <p class="text-muted mb-0">Kelola semua data produk yang ada di gudang.</p>
         </div>
-        {{-- Tombol Tambah Produk untuk role Admin & Manager --}}
-        @role('admin|manager')
+        {{-- Tombol Tambah Produk --}}
+        @can('create-products')
             <a href="{{ route('products.create') }}" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Produk
             </a>
-        @endrole
+        @endcan
     </div>
 @endsection
 
@@ -54,21 +54,21 @@
                             {{-- Kolom harga dengan format Rupiah dan rata kanan --}}
                             <td class="text-end fw-semibold">Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
                             <td class="text-center">
-                                {{-- Aksi hanya untuk role Admin & Manager --}}
-                                @role('admin|manager')
-                                    <div class="btn-group" role="group" aria-label="Aksi produk">
-                                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-outline-warning" title="Edit Produk">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger" title="Hapus Produk">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                @endrole
+                                {{-- Aksi --}}
+                                @can('edit-products')
+                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-outline-warning" title="Edit Produk">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                @endcan
+                                @can('delete-products')
+                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger" title="Hapus Produk">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                @endcan
                             </td>
                         </tr>
                     @empty
@@ -78,12 +78,12 @@
                             <td colspan="7" class="text-center text-muted py-5">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 Belum ada data produk.
-                                @role('admin|manager')
+                                @can('create-products')
                                     <br>
                                     <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary mt-2">
                                         <i class="bi bi-plus-circle me-1"></i> Tambah Produk Pertama
                                     </a>
-                                @endrole
+                                @endcan
                             </td>
                         </tr>
                     @endforelse

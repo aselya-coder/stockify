@@ -7,6 +7,21 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
+    public function __construct()
+    {
+        // Hanya user dengan permission 'view-suppliers' yang bisa melihat daftar dan detail
+        $this->middleware('permission:view-suppliers')->only('index', 'show');
+
+        // Hanya user dengan permission 'create-suppliers' yang bisa menambah
+        $this->middleware('permission:create-suppliers')->only('create', 'store');
+
+        // Hanya user dengan permission 'edit-suppliers' yang bisa mengedit
+        $this->middleware('permission:edit-suppliers')->only('edit', 'update');
+
+        // Hanya user dengan permission 'delete-suppliers' yang bisa menghapus
+        $this->middleware('permission:delete-suppliers')->only('destroy');
+    }
+
     /**
      * Menampilkan daftar semua supplier
      */

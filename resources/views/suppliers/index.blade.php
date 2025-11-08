@@ -9,12 +9,12 @@
             <h1 class="mb-1">🚚 Daftar Supplier</h1>
             <p class="text-muted mb-0">Kelola informasi supplier atau pemasok barang.</p>
         </div>
-        {{-- TOMBOL TAMBAH SUPPLIER DITAMBAHKAN KEMBALI DI SINI --}}
-        @role('admin|manager')
+        {{-- TOMBOL TAMBAH SUPPLIER --}}
+        @can('create-suppliers')
             <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Supplier
             </a>
-        @endrole
+        @endcan
     </div>
 @endsection
 
@@ -41,20 +41,20 @@
                         <td>{{ $supplier->telepon }}</td>
                         <td class="text-muted">{{ $supplier->alamat }}</td>
                         <td class="text-center">
-                            @role('admin|manager')
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus supplier ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger" title="Hapus">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            @endrole
+                            @can('edit-suppliers')
+                                <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            @endcan
+                            @can('delete-suppliers')
+                                <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus supplier ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-outline-danger" title="Hapus">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            @endcan
                         </td>
                     </tr>
                     @empty
@@ -62,12 +62,12 @@
                         <td colspan="5" class="text-center text-muted py-5">
                             <i class="bi bi-truck fs-1 d-block mb-2"></i>
                             Belum ada data supplier.
-                            @role('admin|manager')
+                            @can('create-suppliers')
                                 <br>
                                 <a href="{{ route('suppliers.create') }}" class="btn btn-sm btn-primary mt-2">
                                     <i class="bi bi-plus-circle me-1"></i> Tambah Supplier Pertama
                                 </a>
-                            @endrole
+                            @endcan
                         </td>
                     </tr>
                     @endforelse

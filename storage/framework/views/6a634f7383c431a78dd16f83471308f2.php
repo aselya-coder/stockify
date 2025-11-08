@@ -10,7 +10,7 @@
             <p class="text-muted mb-0">Kelola semua data produk yang ada di gudang.</p>
         </div>
         
-        <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|manager')): ?>
+        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create-products')): ?>
             <a href="<?php echo e(route('products.create')); ?>" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-2"></i> Tambah Produk
             </a>
@@ -56,19 +56,19 @@
                             <td class="text-end fw-semibold">Rp <?php echo e(number_format($product->harga, 0, ',', '.')); ?></td>
                             <td class="text-center">
                                 
-                                <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|manager')): ?>
-                                    <div class="btn-group" role="group" aria-label="Aksi produk">
-                                        <a href="<?php echo e(route('products.edit', $product->id)); ?>" class="btn btn-sm btn-outline-warning" title="Edit Produk">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <form action="<?php echo e(route('products.destroy', $product->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
-                                            <?php echo csrf_field(); ?>
-                                            <?php echo method_field('DELETE'); ?>
-                                            <button class="btn btn-sm btn-outline-danger" title="Hapus Produk">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('edit-products')): ?>
+                                    <a href="<?php echo e(route('products.edit', $product->id)); ?>" class="btn btn-sm btn-outline-warning" title="Edit Produk">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                <?php endif; ?>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete-products')): ?>
+                                    <form action="<?php echo e(route('products.destroy', $product->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button class="btn btn-sm btn-outline-danger" title="Hapus Produk">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -79,7 +79,7 @@
                             <td colspan="7" class="text-center text-muted py-5">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 Belum ada data produk.
-                                <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin|manager')): ?>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create-products')): ?>
                                     <br>
                                     <a href="<?php echo e(route('products.create')); ?>" class="btn btn-sm btn-primary mt-2">
                                         <i class="bi bi-plus-circle me-1"></i> Tambah Produk Pertama

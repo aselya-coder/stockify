@@ -16,6 +16,8 @@ class StokController extends Controller
         $this->middleware('permission:confirm-stock-in')->only('confirmMasukForm', 'confirmMasuk');
         $this->middleware('permission:confirm-stock-out')->only('confirmKeluarForm', 'confirmKeluar');
         $this->middleware('permission:perform-stock-opname')->only('opname');
+        $this->middleware('permission:edit-mutations')->only('edit', 'update');
+        $this->middleware('permission:delete-mutations')->only('destroy');
     }
 
     public function index()
@@ -136,5 +138,81 @@ class StokController extends Controller
     {
         $products = Product::with('category', 'supplier')->get();
         return view('stok.total', compact('products'));
+    }
+
+    public function edit($id)
+    {
+        $mutation = StockMutation::with('product')->findOrFail($id);
+        $products = Product::all();
+        return view('stok.edit', compact('mutation', 'products'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $mutation = StockMutation::findOrFail($id);
+
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'type' => 'required|in:masuk,keluar',
+            'quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string',
+        ]);
+
+        // Store old values for stock recalculation
+        $oldType = $mutation->type;
+        $oldQuantity = $mutation->quantity;
+        $oldStatus = $mutation->status;
+        $oldProductId = $mutation->product_id;
+
+        // Update mutation
+        $mutation->update([
+            'product_id' => $request->product_id,
+            'type' => $request->type,
+            'quantity' => $request->quantity,
+            'notes' => $request->notes,
+        ]);
+
+        // Recalculate stock if confirmed
+        if ($oldStatus === 'confirmed') {
+            // Reverse old stock change
+            $oldProduct = Product::find($oldProductId);
+            if ($oldType === 'masuk') {
+                $oldProduct->stok -= $oldQuantity;
+            } else {
+                $oldProduct->stok += $oldQuantity;
+            }
+            $oldProduct->save();
+
+            // Apply new stock change
+            $newProduct = $mutation->product;
+            if ($mutation->type === 'masuk') {
+                $newProduct->stok += $mutation->quantity;
+            } else {
+                $newProduct->stok -= $mutation->quantity;
+            }
+            $newProduct->save();
+        }
+
+        return redirect()->route('stok.index')->with('success', 'Mutasi stok berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $mutation = StockMutation::findOrFail($id);
+
+        // Reverse stock change if confirmed
+        if ($mutation->status === 'confirmed') {
+            $product = $mutation->product;
+            if ($mutation->type === 'masuk') {
+                $product->stok -= $mutation->quantity;
+            } else {
+                $product->stok += $mutation->quantity;
+            }
+            $product->save();
+        }
+
+        $mutation->delete();
+
+        return redirect()->route('stok.index')->with('success', 'Mutasi stok berhasil dihapus!');
     }
 }

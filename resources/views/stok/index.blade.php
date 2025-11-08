@@ -57,7 +57,20 @@
                         <td class="fw-semibold">{{ $mutation->quantity }}</td>
                         <td class="text-muted">{{ $mutation->notes ?? '-' }}</td>
                         <td class="text-center">
-                            {{-- No delete action for now --}}
+                            @if(auth()->user()->hasRole('admin'))
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('stok.edit', $mutation->id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="{{ route('stok.destroy', $mutation->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus mutasi ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                         </td>
                     </tr>
                     @empty

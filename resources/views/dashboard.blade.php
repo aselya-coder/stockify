@@ -71,27 +71,35 @@
     <div class="col-lg-4 mb-4">
         <div class="quick-action-card">
             <h5 class="mb-3">🚀 Aksi Cepat</h5>
-            @role('admin|manager')
+            @can('create-products')
                 <a href="{{ route('products.create') }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle me-2"></i> Tambah Produk
                 </a>
+            @endcan
+            @can('create-categories')
                 <a href="{{ route('categories.create') }}" class="btn btn-success">
                     <i class="bi bi-plus-circle me-2"></i> Tambah Kategori
                 </a>
+            @endcan
+            @can('create-suppliers')
                 <a href="{{ route('suppliers.create') }}" class="btn btn-info">
                     <i class="bi bi-plus-circle me-2"></i> Tambah Supplier
                 </a>
-                {{-- TOMBOL STOK DIKEMBALIKAN KE SINI --}}
+            @endcan
+            {{-- TOMBOL STOK --}}
+            @can('record-stock-in')
                 <a href="{{ route('stok.masuk') }}" class="btn btn-warning">
                     <i class="bi bi-plus-circle me-2"></i> Stok Masuk
                 </a>
+            @endcan
+            @can('record-stock-out')
                 <a href="{{ route('stok.keluar') }}" class="btn btn-danger">
                     <i class="bi bi-dash-circle me-2"></i> Stok Keluar
                 </a>
-                <a href="{{ route('stok.total') }}" class="btn btn-secondary">
-                    <i class="bi bi-clipboard-data me-2"></i> Laporan Stok
-                </a>
-            @endrole
+            @endcan
+            <a href="{{ route('stok.total') }}" class="btn btn-secondary">
+                <i class="bi bi-clipboard-data me-2"></i> Laporan Stok
+            </a>
         </div>
     </div>
 

@@ -10,9 +10,9 @@ class ReportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view-stock-report')->only('stock');
-        $this->middleware('permission:view-transaction-report')->only('transaction');
-        $this->middleware('permission:view-user-activity-report')->only('activity');
+        $this->middleware('permission:lihat-laporan-stok')->only('stock');
+        $this->middleware('permission:lihat-laporan-transaksi')->only('transaction');
+        $this->middleware('permission:lihat-laporan-aktivitas')->only('activity');
     }
 
     public function stock(Request $request)

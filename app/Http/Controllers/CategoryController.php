@@ -8,6 +8,21 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        // Hanya user dengan permission 'view-categories' yang bisa melihat daftar dan detail
+        $this->middleware('permission:view-categories')->only('index', 'show');
+
+        // Hanya user dengan permission 'create-categories' yang bisa menambah
+        $this->middleware('permission:create-categories')->only('create', 'store');
+
+        // Hanya user dengan permission 'edit-categories' yang bisa mengedit
+        $this->middleware('permission:edit-categories')->only('edit', 'update');
+
+        // Hanya user dengan permission 'delete-categories' yang bisa menghapus
+        $this->middleware('permission:delete-categories')->only('destroy');
+    }
+
     /**
      * Menampilkan daftar kategori dengan pagination.
      */

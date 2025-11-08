@@ -7,3 +7,7 @@
 - [x] Add features and benefits table beside the hero text
 - [x] Adjust layout to fit without scrolling
 - [x] Revert to original welcome page layout with sections
+- [x] Modify hero section: replace image with features and benefits table
+- [x] Update CSS for table styling and responsive layout
+- [x] Adjust hero padding and remove min-height to prevent scrolling
+- [x] Test the updated page in browser (server running, browser tool disabled but changes applied)

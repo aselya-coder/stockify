@@ -302,10 +302,18 @@
                 <a href="{{ route('stok.index') }}" class="nav-link {{ request()->routeIs('stok.index') ? 'active' : '' }}">
                     <i class="bi bi-arrow-left-right"></i> Mutasi Stok
                 </a>
+                
                 {{-- 🔧 MENU BARU YANG DITAMBAHKAN --}}
                 <a href="{{ route('stok.total') }}" class="nav-link {{ request()->routeIs('stok.total') ? 'active' : '' }}">
                     <i class="bi bi-clipboard-data"></i> Laporan Stok
                 </a>
+                
+                {{-- ✅ MENU PENGGUNGA (HANYA UNTUK ADMIN) --}}
+                @role('admin')
+                    <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                        <i class="bi bi-people"></i> Pengguna
+                    </a>
+                @endrole
             </nav>
             @endauth
 

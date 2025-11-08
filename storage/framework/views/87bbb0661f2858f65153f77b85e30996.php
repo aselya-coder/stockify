@@ -303,9 +303,17 @@
                     <i class="bi bi-arrow-left-right"></i> Mutasi Stok
                 </a>
                 
+                
                 <a href="<?php echo e(route('stok.total')); ?>" class="nav-link <?php echo e(request()->routeIs('stok.total') ? 'active' : ''); ?>">
                     <i class="bi bi-clipboard-data"></i> Laporan Stok
                 </a>
+                
+                
+                <?php if (\Illuminate\Support\Facades\Blade::check('role', 'admin')): ?>
+                    <a href="<?php echo e(route('admin.users.index')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.users.*') ? 'active' : ''); ?>">
+                        <i class="bi bi-people"></i> Pengguna
+                    </a>
+                <?php endif; ?>
             </nav>
             <?php endif; ?>
 

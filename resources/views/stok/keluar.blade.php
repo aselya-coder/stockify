@@ -25,8 +25,6 @@
                 <h5 class="card-title mb-4">Formulir Stok Keluar</h5>
                 <form action="{{ route('stok.keluar.store') }}" method="POST">
                     @csrf
-                    @method('DELETE')
-                    <input type="hidden" name="_method" value="DELETE">
 
                     <div class="mb-3">
                         <label for="product_id" class="form-label">Pilih Produk</label>
@@ -42,16 +40,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="jumlah" class="form-label">Jumlah Keluar</label>
-                        <input type="number" name="jumlah" class="form-control" min="1" required>
-                        @error('jumlah')
+                        <label for="quantity" class="form-label">Jumlah Keluar</label>
+                        <input type="number" name="quantity" class="form-control" min="1" required>
+                        @error('quantity')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="keterangan" class="poini mb-2">Keterangan (Opsional)</label>
-                        <textarea name="keterangan" id="keterangan" class="form-control" rows="3"></textarea>
+                        <label for="notes" class="form-label">Keterangan (Opsional)</label>
+                        <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-danger">

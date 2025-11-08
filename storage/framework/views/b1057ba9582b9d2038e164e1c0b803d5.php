@@ -121,23 +121,22 @@
 
         /* --- Hero Section --- */
         .hero {
-            padding: 150px 0 80px;
+            padding: 120px 0 60px;
             display: flex;
-            align-items: center;
-            min-height: 100vh;
+            align-items: flex-start;
         }
         .hero-content {
             flex: 1;
             padding-right: 2rem;
         }
         .hero-content h1 {
-            font-size: 3.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
             line-height: 1.2;
             margin-bottom: 1.5rem;
         }
         .hero-content p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-gray);
             margin-bottom: 2rem;
         }
@@ -166,13 +165,34 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        .hero-image {
+        .hero-table {
             flex: 1;
-            text-align: center;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
         }
-        .hero-image img {
-            max-width: 90%;
-            height: auto;
+        .hero-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .hero-table th, .hero-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .hero-table th {
+            background-color: var(--light-bg);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .hero-table td {
+            color: var(--dark-color);
+        }
+        .hero-table .icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-right: 0.5rem;
         }
 
         /* --- Section Styling --- */
@@ -341,6 +361,7 @@
             .mobile-menu-toggle { display: block; }
             .hero { flex-direction: column; text-align: center; padding: 120px 0 60px; }
             .hero-content { padding-right: 0; margin-bottom: 2rem; }
+            .hero-table { margin-top: 2rem; }
             .footer-content { grid-template-columns: 1fr; text-align: center; }
         }
         @media (max-width: 768px) {
@@ -385,8 +406,33 @@
                         <a href="#features" class="btn btn-outline">Lihat Fitur</a>
                     </div>
                 </div>
-                <div class="hero-image fade-in">
-                    <img src="https://assets.website-files.com/5e51c674258ffe10d286d30a/5e5358878e2493fbea064dd6_peep-59.svg" alt="">
+                <div class="hero-table fade-in">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fitur Utama</th>
+                                <th>Manfaat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="bi bi-box-seam icon"></i>Manajemen Stok Real-Time</td>
+                                <td>Pantau stok secara langsung dengan update otomatis.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="bi bi-graph-up icon"></i>Laporan & Analitik</td>
+                                <td>Data lengkap untuk keputusan bisnis yang tepat.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="bi bi-bell icon"></i>Notifikasi Stok Rendah</td>
+                                <td>Hindari kekosongan stok dengan peringatan dini.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="bi bi-people icon"></i>Multi-User Access</td>
+                                <td>Kelola akses dengan peran admin, kasir, dan staf.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>

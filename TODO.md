@@ -1,10 +1,9 @@
-# TODO: Add Delete and Update Functionality for Stock Mutations
-
-## Completed Tasks
-- [x] Add delete-mutations and edit-mutations permissions to RolePermissionSeeder
-- [x] Update StokController with destroy and update methods for mutations
-- [x] Add routes for mutation CRUD operations (admin only)
-- [x] Update stok/index.blade.php to show edit/delete buttons for admin
-- [x] Create edit form view for mutations
-- [x] Handle stock recalculation when mutations are edited/deleted
-- [x] Test the functionality with admin role (seeded permissions)
+- [x] Remove features section from welcome.blade.php
+- [x] Remove benefits section from welcome.blade.php
+- [x] Remove testimonials section from welcome.blade.php
+- [x] Remove CTA section from welcome.blade.php
+- [x] Simplify footer to basic copyright line
+- [x] Test the page to ensure no scrolling is needed (server running, changes applied)
+- [x] Add features and benefits table beside the hero text
+- [x] Adjust layout to fit without scrolling
+- [x] Revert to original welcome page layout with sections

@@ -391,107 +391,117 @@
             </div>
         </section>
 
+
         <!-- Features Section -->
-        <section id="features" class="features section-reduce-bottom-padding">
+        <section id="features" class="section">
             <div class="container">
-                <h2 class="section-title fade-in">Fitur Unggulan Stockify</h2>
-                <p class="section-subtitle fade-in">Semua yang Anda butuhkan untuk mengelola gudang dengan lebih baik dan lebih cerdas.</p>
+                <h2 class="section-title">Fitur Unggulan Stockify</h2>
+                <p class="section-subtitle">Kelola inventaris bisnis Anda dengan fitur-fitur canggih yang dirancang untuk kemudahan dan efisiensi.</p>
                 <div class="grid">
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-box-seam"></i></div>
-                        <h3>Manajemen Stok Otomatis</h3>
-                        <p>Catat keluar-masuk barang secara otomatis dengan update real-time.</p>
+                        <h3>Manajemen Stok Real-Time</h3>
+                        <p>Pantau stok barang secara real-time dengan update otomatis setiap transaksi masuk dan keluar.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-graph-up"></i></div>
-                        <h3>Laporan & Analisis Data</h3>
-                        <p>Dapatkan grafik stok, laporan penjualan, dan pergerakan barang dalam sekali klik.</p>
+                        <h3>Laporan & Analitik</h3>
+                        <p>Dapatkan laporan lengkap dan analitik data untuk membantu pengambilan keputusan bisnis.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-bell"></i></div>
                         <h3>Notifikasi Stok Rendah</h3>
-                        <p>Sistem akan mengingatkan saat stok hampir habis agar tidak kehilangan penjualan.</p>
+                        <p>Sistem akan memberi tahu Anda ketika stok barang hampir habis untuk menghindari kekosongan.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-people"></i></div>
-                        <h3>Multi-User & Role Access</h3>
-                        <p>Atur hak akses admin, kasir, dan staf gudang dengan mudah.</p>
+                        <h3>Multi-User Access</h3>
+                        <p>Kelola akses pengguna dengan peran admin, kasir, dan staf gudang untuk keamanan data.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-tags"></i></div>
-                        <h3>Manajemen Supplier & Produk</h3>
-                        <p>Pantau performa supplier dan kelola kategori produk dengan efisien.</p>
+                        <h3>Kategori & Supplier</h3>
+                        <p>Organisir produk berdasarkan kategori dan pantau performa supplier dengan mudah.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-cloud-check"></i></div>
-                        <h3>Cloud-Based & Aman</h3>
-                        <p>Data tersimpan di cloud, bisa diakses kapan saja dan di mana saja.</p>
+                        <h3>Cloud-Based Storage</h3>
+                        <p>Data tersimpan aman di cloud dan dapat diakses dari mana saja kapan saja.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Benefits Section -->
-        <section id="benefits" class="benefits" style="background-color: var(--light-bg);">
+        <section id="benefits" class="section section-reduce-bottom-padding">
             <div class="container">
-                <h2 class="section-title fade-in">Manfaat Menggunakan Stockify</h2>
-                <p class="section-subtitle fade-in">Bukan hanya sekadar software, tapi solusi untuk pertumbuhan bisnis Anda.</p>
+                <h2 class="section-title">Manfaat Menggunakan Stockify</h2>
+                <p class="section-subtitle">Rasakan perbedaannya dalam mengelola inventaris bisnis Anda.</p>
                 <div class="grid">
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-clock-history"></i></div>
                         <h3>Efisiensi Waktu</h3>
-                        <p>Tidak perlu mencatat manual — semua data otomatis tersinkron.</p>
+                        <p>Hemat waktu hingga 70% dengan proses otomatisasi yang meminimalkan pekerjaan manual.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-shield-check"></i></div>
-                        <h3>Kurangi Kerugian Stok Hilang</h3>
-                        <p>Sistem mencatat setiap mutasi barang secara rinci dan aman.</p>
+                        <h3>Minimalkan Kerugian</h3>
+                        <p>Hindari kerugian akibat stok hilang atau kesalahan pencatatan dengan sistem yang akurat.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi-lightbulb"></i></div>
-                        <h3>Keputusan Bisnis Lebih Cepat</h3>
-                        <p>Data analitik membantu kamu melihat tren stok dan penjualan.</p>
+                        <h3>Keputusan Lebih Cepat</h3>
+                        <p>Data real-time membantu Anda membuat keputusan bisnis yang lebih tepat dan cepat.</p>
                     </div>
                     <div class="card fade-in">
                         <div class="card-icon"><i class="bi bi-eye"></i></div>
-                        <h3>Transparansi Operasional</h3>
-                        <p>Semua aktivitas tercatat dan bisa diaudit dengan mudah.</p>
+                        <h3>Transparansi Penuh</h3>
+                        <p>Semua aktivitas tercatat dan dapat diaudit untuk transparansi operasional maksimal.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Testimonials Section -->
-        <section id="testimonials" class="testimonials">
+        <section class="testimonials section">
             <div class="container">
-                <h2 class="section-title fade-in">Apa Kata Mereka?</h2>
-                <p class="section-subtitle fade-in">Bergabunglah dengan ribuan bisnis yang telah mempercayai Stockify.</p>
+                <h2 class="section-title">Apa Kata Pengguna Kami</h2>
+                <p class="section-subtitle">Bergabunglah dengan ribuan bisnis yang telah mempercayai Stockify.</p>
                 <div class="grid">
                     <div class="testimonial-card fade-in">
-                        <img src="https://i.pravatar.cc/80?img=5" alt="User Avatar" class="testimonial-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User" class="testimonial-avatar">
                         <div class="testimonial-content">
-                            <p>"Sejak pakai Stockify, stok di gudang lebih teratur dan laporan penjualan lebih cepat keluar."</p>
-                            <h4>Rudi Hartono</h4>
-                            <span>Manager Gudang PT Maju Jaya</span>
+                            <p>"Stockify telah mengubah cara kami mengelola inventaris. Sekarang semuanya lebih efisien dan akurat."</p>
+                            <h4>Sarah Johnson</h4>
+                            <span>Owner, Retail Store</span>
                         </div>
                     </div>
                     <div class="testimonial-card fade-in">
-                        <img src="https://i.pravatar.cc/80?img=12" alt="User Avatar" class="testimonial-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User" class="testimonial-avatar">
                         <div class="testimonial-content">
-                            <p>"Antarmukannya sangat intuitif, staf kami hanya butuh waktu sehari untuk beradaptasi. Sangat direkomendasikan!"</p>
-                            <h4>Siti Nurhaliza</h4>
-                            <span>Owner Toko Kelontong Sukses</span>
+                            <p>"Laporan real-time sangat membantu dalam pengambilan keputusan. Sangat direkomendasikan!"</p>
+                            <h4>Michael Chen</h4>
+                            <span>Manager, Wholesale Business</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-card fade-in">
+                        <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="User" class="testimonial-avatar">
+                        <div class="testimonial-content">
+                            <p>"Interface yang user-friendly dan fitur notifikasi stok rendah sangat berguna untuk bisnis kami."</p>
+                            <h4>Emily Davis</h4>
+                            <span>CEO, Fashion Boutique</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Call to Action Section -->
-        <section id="cta" class="cta">
-            <div class="container fade-in">
-                <h2>Mulai Digitalisasi Stok Bisnismu Hari Ini!</h2>
-                <a href="{{ route('register') }}" class="btn">Daftar Sekarang</a>
+        <!-- CTA Section -->
+        <section class="cta section">
+            <div class="container">
+                <h2>Mulai Kelola Stok Anda Sekarang</h2>
+                <p>Bergabunglah dengan ribuan bisnis yang telah menggunakan Stockify untuk mengoptimalkan manajemen inventaris mereka.</p>
+                <a href="{{ route('register') }}" class="btn">Mulai Gratis</a>
             </div>
         </section>
     </main>
@@ -499,41 +509,6 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Stockify</h3>
-                    <p>Smart Inventory Management untuk bisnis modern yang ingin tumbuh cepat dan efisien.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Produk</h4>
-                    <ul>
-                        <li><a href="#">Fitur</a></li>
-                        <li><a href="#">Harga</a></li>
-                        <li><a href="#">Integrasi</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Perusahaan</h4>
-                    <ul>
-                        <li><a href="#">Tentang Kami</a></li>
-                        <li><a href="#">Karir</a></li>
-                        <li><a href="#">Kontak</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Bantuan</h4>
-                    <ul>
-                        <li><a href="#">Pusat Bantuan</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Kebijakan Privasi</a></li>
-                    </ul>
-                </div>
-            </div>
             <div class="footer-bottom">
                 <p>&copy; {{ date('Y') }} Stockify. All rights reserved.</p>
             </div>

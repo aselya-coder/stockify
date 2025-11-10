@@ -111,6 +111,8 @@ class RolePermissionSeeder extends Seeder
             'view-staff-dashboard',
             'view-products',
             'view-product-details',
+            'view-categories',
+            'view-suppliers',
             'view-stock-history',
             'confirm-stock-in',
             'confirm-stock-out',

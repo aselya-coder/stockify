@@ -21,6 +21,7 @@
             --white: #ffffff;
             --text-gray: #6b7280;
             --border-color: #e5e7eb;
+            --accent-color: #4f46e5;
         }
 
         * {
@@ -250,6 +251,153 @@
             color: var(--text-gray);
         }
 
+        /* --- Pricing Section --- */
+        .pricing {
+            background-color: var(--light-bg);
+        }
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .pricing-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .pricing-card.featured {
+            border: 2px solid var(--accent-color);
+            transform: scale(1.05);
+        }
+        .pricing-card.featured::before {
+            content: "Paling Populer";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .pricing-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .pricing-subtitle {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        .pricing-price {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .pricing-currency {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            vertical-align: top;
+        }
+        .pricing-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .pricing-period {
+            color: var(--text-gray);
+        }
+        .pricing-features {
+            margin-bottom: 2rem;
+        }
+        .pricing-feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .pricing-feature i {
+            color: var(--accent-color);
+            margin-right: 0.8rem;
+        }
+        .pricing-feature.disabled {
+            color: var(--text-gray);
+        }
+        .pricing-feature.disabled i {
+            color: var(--text-gray);
+        }
+        .pricing-button {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .pricing-button.primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        .pricing-button.primary:hover {
+            background-color: #1f2937;
+        }
+        .pricing-button.secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .pricing-button.secondary:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        .pricing-faq {
+            margin-top: 4rem;
+        }
+        .faq-item {
+            background: var(--white);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .faq-question {
+            padding: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 1.5rem 1.5rem;
+        }
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
         /* --- Testimonials --- */
         .testimonials {
             background-color: var(--light-bg);
@@ -381,11 +529,15 @@
             .hero-content { padding-right: 0; margin-bottom: 2rem; }
             .hero-table { margin-top: 2rem; }
             .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .pricing-card.featured {
+                transform: scale(1);
+            }
         }
         @media (max-width: 768px) {
             .hero-content h1 { font-size: 2.5rem; }
             .section-title { font-size: 2rem; }
             .testimonial-card { flex-direction: column; text-align: center; }
+            .pricing-cards { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -404,6 +556,7 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#features">Fitur</a></li>
                     <li><a href="#benefits">Manfaat</a></li>
+                    <li><a href="#pricing">Harga</a></li>
                     <li><a href="<?php echo e(route('login')); ?>">Login</a></li>
                     <li><a href="<?php echo e(route('register')); ?>" class="btn-cta">Mulai Sekarang</a></li>
                 </ul>
@@ -421,7 +574,7 @@
                     <p>Pantau arus barang masuk dan keluar, dapatkan laporan real-time, dan hindari kekosongan stok hanya dalam satu dashboard.</p>
                     <div class="hero-buttons">
                         <a href="<?php echo e(route('register')); ?>" class="btn btn-primary">Coba Sekarang</a>
-                        <a href="#features" class="btn btn-outline">Lihat Fitur</a>
+                        <a href="#pricing" class="btn btn-outline">Lihat Harga</a>
                     </div>
                 </div>
                 <div class="hero-table fade-in">
@@ -526,6 +679,168 @@
             </div>
         </section>
 
+        <!-- Pricing Section -->
+        <section id="pricing" class="section pricing">
+            <div class="container">
+                <h2 class="section-title">Pilih Paket yang Sesuai untuk Bisnis Anda</h2>
+                <p class="section-subtitle">Stockify menawarkan berbagai paket fleksibel yang dapat disesuaikan dengan kebutuhan bisnis Anda.</p>
+                
+                <div class="pricing-cards">
+                    <!-- Basic Plan -->
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Starter</h3>
+                            <p class="pricing-subtitle">Untuk bisnis kecil yang baru memulai</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="pricing-currency">Rp</span>
+                            <span class="pricing-amount">99K</span>
+                            <span class="pricing-period">/bulan</span>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Hingga 100 produk</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>1 pengguna</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Laporan dasar</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Notifikasi stok rendah</span>
+                            </div>
+                            <div class="pricing-feature disabled">
+                                <i class="bi bi-x-circle-fill"></i>
+                                <span>Analitik lanjutan</span>
+                            </div>
+                            <div class="pricing-feature disabled">
+                                <i class="bi bi-x-circle-fill"></i>
+                                <span>Integrasi API</span>
+                            </div>
+                        </div>
+                        <a href="<?php echo e(route('register')); ?>" class="pricing-button secondary">Coba Gratis</a>
+                    </div>
+
+                    <!-- Pro Plan -->
+                    <div class="pricing-card featured fade-in">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Professional</h3>
+                            <p class="pricing-subtitle">Untuk bisnis yang sedang berkembang</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="pricing-currency">Rp</span>
+                            <span class="pricing-amount">299K</span>
+                            <span class="pricing-period">/bulan</span>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Hingga 1000 produk</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Hingga 5 pengguna</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Laporan lengkap</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Notifikasi stok rendah</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Analitik lanjutan</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Integrasi marketplace</span>
+                            </div>
+                        </div>
+                        <a href="<?php echo e(route('register')); ?>" class="pricing-button primary">Coba Gratis</a>
+                    </div>
+
+                    <!-- Enterprise Plan -->
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Enterprise</h3>
+                            <p class="pricing-subtitle">Untuk bisnis besar dan korporasi</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="pricing-currency">Rp</span>
+                            <span class="pricing-amount">799K</span>
+                            <span class="pricing-period">/bulan</span>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Produk tidak terbatas</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Pengguna tidak terbatas</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Laporan kustomisasi</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Notifikasi stok rendah</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Analitik lanjutan</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>Integrasi API penuh</span>
+                            </div>
+                        </div>
+                        <a href="<?php echo e(route('register')); ?>" class="pricing-button secondary">Hubungi Sales</a>
+                    </div>
+                </div>
+
+                <!-- FAQ Section -->
+                <div class="pricing-faq">
+                    <h3 class="section-title">Pertanyaan yang Sering Diajukan</h3>
+                    <div class="faq-item fade-in">
+                        <div class="faq-question">
+                            <span>Apakah saya bisa mengubah paket kapan saja?</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Ya, Anda dapat mengubah paket berlangganan kapan saja. Jika Anda naik ke paket yang lebih tinggi, biaya akan disesuaikan secara prorata. Jika Anda turun ke paket yang lebih rendah, perubahan akan berlaku pada periode penagihan berikutnya.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item fade-in">
+                        <div class="faq-question">
+                            <span>Apakah ada biaya setup atau tersembunyi?</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Tidak, kami tidak mengenakan biaya setup atau biaya tersembunyi. Anda hanya membayar biaya berlangganan bulanan atau tahunan sesuai paket yang Anda pilih.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item fade-in">
+                        <div class="faq-question">
+                            <span>Apakah data saya aman dengan Stockify?</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Absolut! Kami menggunakan enkripsi data tingkat enterprise dan menyimpan semua data di server cloud yang aman. Kami juga melakukan backup harian untuk memastikan data Anda selalu terlindungi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Testimonials Section -->
         <section class="testimonials section">
             <div class="container">
@@ -565,7 +880,7 @@
             <div class="container">
                 <h2>Mulai Kelola Stok Anda Sekarang</h2>
                 <p>Bergabunglah dengan ribuan bisnis yang telah menggunakan Stockify untuk mengoptimalkan manajemen inventaris mereka.</p>
-                <a href="<?php echo e(route('register')); ?>" class="btn">Mulai Gratis</a>
+                <a href="<?php echo e(route('register')); ?>" class="btn">Mulai Sekarang</a>
             </div>
         </section>
     </main>
@@ -633,6 +948,25 @@
 
             faders.forEach(fader => {
                 appearOnScroll.observe(fader);
+            });
+
+            // --- FAQ Accordion ---
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // Close all other items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current item
+                    item.classList.toggle('active');
+                });
             });
         });
     </script>

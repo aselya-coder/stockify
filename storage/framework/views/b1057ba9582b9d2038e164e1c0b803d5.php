@@ -117,6 +117,7 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
+            color: var(--dark-color);
         }
 
         /* --- Hero Section --- */
@@ -357,7 +358,24 @@
 
         /* --- Responsive --- */
         @media (max-width: 992px) {
-            .nav-links { display: none; }
+            .nav-links { 
+                display: none; 
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.98);
+                flex-direction: column;
+                padding: 1rem 0;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links li {
+                margin: 0.5rem 0;
+                text-align: center;
+            }
             .mobile-menu-toggle { display: block; }
             .hero { flex-direction: column; text-align: center; padding: 120px 0 60px; }
             .hero-content { padding-right: 0; margin-bottom: 2rem; }
@@ -570,6 +588,27 @@
             if (mobileMenuToggle) {
                 mobileMenuToggle.addEventListener('click', () => {
                     navLinks.classList.toggle('active');
+                    
+                    // Change icon based on menu state
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (navLinks.classList.contains('active')) {
+                        icon.classList.remove('bi-list');
+                        icon.classList.add('bi-x');
+                    } else {
+                        icon.classList.remove('bi-x');
+                        icon.classList.add('bi-list');
+                    }
+                });
+                
+                // Close menu when clicking on a link
+                const links = navLinks.querySelectorAll('a');
+                links.forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        icon.classList.remove('bi-x');
+                        icon.classList.add('bi-list');
+                    });
                 });
             }
 
@@ -598,5 +637,4 @@
         });
     </script>
 </body>
-</html>
-<?php /**PATH C:\laragon\www\stockify\resources\views/welcome.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\laragon\www\stockify\resources\views/welcome.blade.php ENDPATH**/ ?>

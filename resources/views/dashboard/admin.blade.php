@@ -38,7 +38,7 @@
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h1 class="mb-1">👑 Dashboard Admin</h1>
-            <p class="text-muted mb-0">Gambaran umum keseluruhan sistem.</p>
+            <p class="text-muted mb-0">Keseluruhan sistem.</p>
         </div>
         <div>
             <button id="refreshButton" class="btn btn-outline-primary" onclick="refreshCharts()">
